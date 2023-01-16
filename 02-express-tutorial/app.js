@@ -1,8 +1,18 @@
-const http = require("http");
+const express = require('express')
+const path = require('path')
+const app = express()
 
-const server = http.createServer((req, res) => {
-  console.log("user hit the server");
-  res.end('home page')
-});
+// set up static and middleware
+app.use(express.static('./public'))
 
-server.listen(3000);
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './navbar-app/index.html'))
+})
+
+app.all('*', (req, res) => {
+  res.status(404).send('Resource not found')
+})
+
+app.listen(3000, () => {
+  console.log('server is listening on port 3000...')
+})

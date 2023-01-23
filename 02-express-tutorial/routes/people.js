@@ -1,59 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const {getPeople, createPerson, createPersonPostman, updatePerson, deletePerson} = require("../controllers/people");
 
-let {people} = require("../data");
+// router.get("/", getPeople);
 
-router.get("/", (req, res) => {
-  res.status(200).json({success: true, data: people});
-});
+// router.put("/:id", updatePerson);
 
-router.put("/:id", (req, res) => {
-  const {id} = req.params;
-  const {name} = req.body;
+// router.post("/postman", createPersonPostman);
 
-  const person = people.find((person) => person.id === Number(id));
+// router.post("/", createPerson);
 
-  if (!person) {
-    return res.status(404).json({success: false, msg: `No person with id ${id}`});
-  }
+// router.delete("/:id", deletePerson);
 
-  const newPeople = people.map((person) => {
-    if (person.id === Number(id)) {
-      person.name = name;
-    }
-    return person;
-  });
-  res.status(200).json({success: true, data: newPeople});
-});
-
-router.post("/postman", (req, res) => {
-  const {name} = req.body;
-  if (!name) {
-    return res.status(400).json({success: false, msg: "Please provide name value"});
-  }
-  res.status(201).send({success: true, data: [...people, name]});
-});
-
-router.post("/", (req, res) => {
-  const {name} = req.body;
-  if (!name) {
-    return res.status(400).json({success: false, msg: "Please provide name value"});
-  }
-  res.status(201).json({success: true, person: name});
-});
-
-router.delete("/:id", (req, res) => {
-  const {id} = req.params;
-  const {name} = req.body;
-
-  const person = people.find((person) => person.id === Number(id));
-
-  if (!person) {
-    return res.status(404).json({success: false, msg: `No person with id ${id}`});
-  }
-
-  const newPeople = people.filter((person) => person.id !== Number(id));
-  return res.status(200).json({success: true, data: newPeople});
-});
+router.route('/').get(getPeople).post(createPerson)
+router.route('/postman').post(createPersonPostman)
+router.route('/:id').put(updatePerson).delete(deletePerson)
 
 module.exports = router;
